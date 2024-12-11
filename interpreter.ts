@@ -45,7 +45,7 @@ export function astNodeToJson(node: ASTNode | null): any {
 }
 
 // Função para interpretar o conteúdo do programa e gerar a AST em JSON
-export function interpretProgram(input: string): string | void {
+export function interpretProgram(input: string): { astJson: string, variables: { [key: string]: any } } {
   try {
     const context = new ExecutionContext();
     const lexer = new Lexer(input);
@@ -61,15 +61,14 @@ export function interpretProgram(input: string): string | void {
     // Exibir o JSON da AST
     const astJson = JSON.stringify(astNodes, null, 2);
 
-    // Exibir o resultado final de todas as variáveis armazenadas no contexto
-    console.log("Valores das variáveis:");
-    for (const [name, value] of Object.entries(context['variables'])) {
-      console.log(`${name}: ${value}`);
-    }
+    // Obter o resultado final das variáveis armazenadas no contexto
+    const variables = context['variables'];
 
-    return astJson;
+    // Retornar tanto a AST em JSON quanto as variáveis interpretadas
+    return { astJson, variables };
   } catch (error) {
     console.error("Erro durante a execução:");
     console.error(error);
+    return { astJson: '', variables: {} }; // Retorna valores vazios em caso de erro
   }
 }
